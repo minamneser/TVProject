@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - My MVC Application</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Other head content -->
+    <style>
+        /* Container for the scrollable list */
+        .scrollable-list-container {
+            display: flex;
+            align-items: center;
+            overflow-x: hidden; /* Hide scrollbar */
+            width: 100%; /* Set the width of the container */
+        }
+
+        /* The scrollable list */
+        .scrollable-list {
+            display: flex;
+            transition: transform 0.3s ease; /* Smooth scrolling effect */
+        }
+
+        /* Each item in the list */
+        .scrollable-list-item {
+            min-width: 150px; /* Adjust the width of each item */
+            margin-right: 10px; /* Space between items */
+            background-color: #f9f9f9; /* Optional: Background color for list items */
+            padding: 10px;
+            border: 1px solid #ddd; /* Optional: Border around each item */
+            text-align: center; /* Center text in the item */
+        }
+
+        /* Button styling */
+        .scroll-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+            .scroll-button:disabled {
+                background-color: #ccc; /* Style for disabled button */
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Scroll buttons -->
+        <button class="scroll-button" id="scrollLeft" onclick="scrollHorizontally(-1)">&#9664; Scroll Left</button>
+
+        <!-- Scrollable list -->
+        <div class="scrollable-list-container">
+            <div class="scrollable-list" id="scrollableList">
+                <div class="scrollable-list-item">Item 1</div>
+                <div class="scrollable-list-item">Item 2</div>
+                <div class="scrollable-list-item">Item 3</div>
+                <div class="scrollable-list-item">Item 4</div>
+                <div class="scrollable-list-item">Item 5</div>
+                <div class="scrollable-list-item">Item 6</div>
+                <div class="scrollable-list-item">Item 7</div>
+                <div class="scrollable-list-item">Item 8</div>
+                <div class="scrollable-list-item">Item 9</div>
+                <div class="scrollable-list-item">Item 10</div>
+                <!-- Add more items as needed -->
+            </div>
+        </div>
+
+        <button class="scroll-button" id="scrollRight" onclick="scrollHorizontally(1)">Scroll Right &#9654;</button>
+    </div>
+
+    @RenderBody()
+
+    <!-- JavaScript to handle scrolling -->
+    <script>
+        function scrollHorizontally(direction) {
+            var scrollContainer = document.getElementById('scrollableList');
+            var scrollAmount = 150 * direction; // Adjust scroll amount as needed
+            scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    </script>
+
+    <!-- Your existing scripts -->
+</body>
+</html>
+
