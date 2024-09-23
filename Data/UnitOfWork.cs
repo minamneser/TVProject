@@ -15,6 +15,11 @@ namespace TVProject.Data
             Producers = new GenericRepository<Producer>(_context);
             Cinemas = new GenericRepository<Cinema>(_context);
             Movies = new GenericRepository<Movie>(_context);
+            Carts = new GenericRepository<Cart>(_context);
+            CartItems = new GenericRepository<CartItem>(_context);
+            Orders = new GenericRepository<Order>(_context);
+            OrdersItems = new GenericRepository<OrderItem>(_context);
+            
         }
 
         public IGenericRepository<Actor> Actors { get; private set; }
@@ -22,10 +27,16 @@ namespace TVProject.Data
         public IGenericRepository<Cinema> Cinemas { get; private set; }
 
 		public IGenericRepository<Movie> Movies {  get; private set; }
+        public IGenericRepository<Cart> Carts { get; private set; }
+        public IGenericRepository<CartItem> CartItems { get; private set; }
+        public IGenericRepository<Order> Orders { get; private set; }
+        public IGenericRepository<OrderItem> OrdersItems { get; private set; }
 
-		public async Task saveAsync()
+        public async Task saveAsync()
         {
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }

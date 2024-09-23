@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TVProject.Data.DataBase;
 using TVProject.Data.Interfaces;
+using TVProject.Models;
 
 namespace TVProject.Data.Repository
 {
@@ -23,6 +24,7 @@ namespace TVProject.Data.Repository
             if (entity != null)
             {
                 _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -47,5 +49,8 @@ namespace TVProject.Data.Repository
         {
             _context.Set<T>().Update(entity);
         }
+
+        
     }
+
 }

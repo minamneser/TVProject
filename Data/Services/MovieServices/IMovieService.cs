@@ -13,5 +13,6 @@ namespace TVProject.Data.Services.MovieServices
         Task<IEnumerable<Cinema>> GetAllCinemasAsync();
         Task<IEnumerable<Producer>> GetAllProducersAsync();
         Task<IEnumerable<Actor>> GetAllActorsAsync();
+        Task syncAllMovies();
     }
 }

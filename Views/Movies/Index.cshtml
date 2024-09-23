@@ -2,76 +2,95 @@
 
 @{
     ViewData["Title"] = "List of Movies";
+    var isAdmin = User.IsInRole("Admin");
 }
-<h1>Movies</h1>
-<p>
-    <a class="btn btn-outline-success" asp-action="Create">Create New</a>
-</p>
+
+<h1 class="text-center mb-4">Movies</h1>
+
+
+@if (isAdmin)
+{
+    <p class="text-center">
+        <a class="btn btn-outline-success" asp-action="Create">Create New</a>
+    </p>
+}
 
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="col-md-4 col-xs-6 border-primary mb-3">
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-12">
-                        <div class="card-header text-white bg-info">
-                            <p class="card-text">
-                                <h5 class="card-title">
-                                    @item.Name
-                                    <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                </h5>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <img src="@item.ImageUrl" width="100%" alt="@item.Name" />
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-body">
-                            <p class="card-text">@item.Description</p>
-                            <p class="card-text">
-                                <b>Cinema: </b>
-                                @(item.Cinema != null ? item.Cinema.Name : "Not Available")
-                            </p>
-                            <p class="card-text"><b>Category: </b>@item.MovieCategory</p>
-                            <p class="card-text"><b>Start Date: </b>@item.StartDate.ToString("dd MMM yy")</p>
-                            <p class="card-text"><b>End Date: </b>@item.EndDate.ToString("dd MMM yy")</p>
-                            <p class="card-text">
-                                <b>Status: </b>
-                                @if (DateTime.Now >= item.StartDate && DateTime.Now <= item.EndDate)
-                                {
-                                    <span class="badge bg-success text-white">AVAILABLE</span>
-                                }
-                                else if (DateTime.Now > item.EndDate)
-                                {
-                                    <span class="badge bg-danger text-white">EXPIRED</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-primary text-white">UPCOMING</span>
-                                }
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="card-footer">
-                            <p class="card-text">
-                                <a class="btn btn-outline-primary float-right" asp-action="Details" asp-route-id="@item.Id">
-                                    <i class="bi bi-eye-fill"></i> Show Details
-                                </a>
-                                <a class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")"
-                                   asp-controller="Orders"
-                                   asp-action="AddItemToShoppingCart"
-                                   asp-route-id="@item.Id">
-                                    <i class="bi bi-cart-plus"></i> Add to Cart (Price @item.Price.ToString("c"))
-                                </a>
-                            </p>
-                        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="position-relative">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 300px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 p-2">
+                        @if (DateTime.Now >= item.StartDate && DateTime.Now <= item.EndDate)
+                        {
+                            <span class="badge bg-success">AVAILABLE</span>
+                        }
+                        else if (DateTime.Now > item.EndDate)
+                        {
+                            <span class="badge bg-danger">EXPIRED</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">UPCOMING</span>
+                        }
                     </div>
                 </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text text-muted">@item.Description</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Cinema:</strong> @(item.Cinema != null ? item.Cinema.Name : "Not Available")</li>
+                        <li><strong>Category:</strong> @item.MovieCategory</li>
+                        <li><strong>Start Date:</strong> @item.StartDate.ToString("dd MMM yy")</li>
+                        <li><strong>End Date:</strong> @item.EndDate.ToString("dd MMM yy")</li>
+                        <li><strong>Price:</strong> @item.Price.ToString("c")</li>
+                    </ul>
+                </div>
+
+                <div class="card-footer bg-white border-top-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id">
+                            <i class="bi bi-eye-fill"></i> Show Details
+                        </a>
+                        <form asp-action="Add" asp-controller="Cart" method="post" style="display:inline;">
+                            <input type="hidden" name="movieId" value="@item.Id" />
+                            <input type="hidden" name="quantity" value="1" /> 
+                            <button type="submit" class="btn btn-success text-white @((DateTime.Now > item.EndDate) ? "disabled" : "")">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+
+                    @if (isAdmin)
+                    {
+                        <div class="mt-2 d-flex justify-content-between">
+                            <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    }
+                </div>
+
             </div>
         </div>
     }
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script>
+    $(document).ready(function () 
+    {
+        var errorMessage = '@TempData["ErrorMessage"]';
+        if (errorMessage) {
+            toastr.error(errorMessage);
+        }
+    });
+</script>

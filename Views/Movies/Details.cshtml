@@ -1,89 +1,89 @@
 ﻿@model TVProject.Models.Movie
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Movie Details";
+    var isAdmin = User.IsInRole("Admin");
 }
 
-<h1>Details</h1>
+<h1 class="text-center mb-4">@Model.Name</h1>
 
-<div>
-    <h4>Movie</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            <img class="rounded-circle" src="@Model.ImageUrl" style="max-width: 150px" />
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MovieCategory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MovieCategory)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cinema)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CinemaId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Producer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProducerId)
-        </dd>        
-    </dl>
-    <div>
-        <h4>Actors</h4>
+<div class="row mb-4">
+    <div class="col-md-6 text-center">
+        <img class="rounded-circle border shadow-sm" src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 300px; object-fit: cover;" />
+    </div>
+    <div class="col-md-6">
+        <h4 class="text-info">Movie Information</h4>
         <hr />
-        <div class="row">
-            @if (Model.Actor_Movies != null)
-            {
-            @foreach (var actorMovie in Model.Actor_Movies)
-            {
-                <div class="col-md-4 text-center">
-                    <img class="border-info rounded-circle" src="@actorMovie.Actor.ProfilePicUrl" style="max-width: 150px" />
-                    <br />
-                    <a asp-controller="Actor" asp-action="Details" asp-route-id="@actorMovie.ActorId">@actorMovie.Actor.FullName</a>
-                </div>
-            }
-            }
-        </div>
+        <dl class="row">
+            <dt class="col-sm-4">Name</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
+
+            <dt class="col-sm-4">Description</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
+
+            <dt class="col-sm-4">Price</dt>
+            <dd class="col-sm-8">@Model.Price.ToString("c")</dd>
+
+            <dt class="col-sm-4">Category</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.MovieCategory)</dd>
+
+            <dt class="col-sm-4">Start Date</dt>
+            <dd class="col-sm-8">@Model.StartDate.ToString("dd MMM yyyy")</dd>
+
+            <dt class="col-sm-4">End Date</dt>
+            <dd class="col-sm-8">@Model.EndDate.ToString("dd MMM yyyy")</dd>
+
+            <dt class="col-sm-4">Cinema</dt>
+            <dd class="col-sm-8">
+                @(Model.Cinema != null ? Model.Cinema.Name : "Not Available")
+            </dd>
+
+            <dt class="col-sm-4">Producer</dt>
+            <dd class="col-sm-8">
+                @(Model.Producer != null ? Model.Producer.FullName : "Not Available")
+            </dd>
+        </dl>
+
+        @if (isAdmin)
+        {
+            <div class="mt-4">
+                <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model?.Id">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+            </div>
+        }
     </div>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <h4 class="text-info">Actors</h4>
+    <hr />
+    <div class="row">
+        @if (Model.Actor_Movies != null && Model.Actor_Movies.Any())
+        {
+            @foreach (var actorMovie in Model.Actor_Movies)
+            {
+                <div class="col-md-4 text-center mb-3">
+                    <img class="rounded-circle border shadow-sm" src="@actorMovie.Actor.ProfilePicUrl" alt="@actorMovie.Actor.FullName" style="max-width: 150px; object-fit: cover;" />
+                    <h5 class="mt-2">
+                        <a class="text-dark" asp-controller="Actor" asp-action="Details" asp-route-id="@actorMovie.ActorId">
+                            @actorMovie.Actor.FullName
+                        </a>
+                    </h5>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="text-muted">No actors assigned to this movie yet.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-4">
+    <a class="btn btn-outline-secondary" asp-action="Index">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
 </div>

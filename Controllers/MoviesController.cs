@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TVProject.Data.DataBase;
 using TVProject.Data.Interfaces;
+using TVProject.Data.Services.ElasticSearch;
 using TVProject.Data.Services.MovieServices;
 using TVProject.Models;
 
@@ -17,10 +18,12 @@ namespace TVProject.Controllers
     public class MoviesController : Controller
     {
         private readonly IMovieService _movieService;
+        private readonly ElasticSearchService _elasticsearchService;
 
-        public MoviesController(IMovieService movieService)
+        public MoviesController(IMovieService movieService, ElasticSearchService elasticSearchService)
         {
             _movieService = movieService;
+            _elasticsearchService = elasticSearchService;
         }
 
         // GET: Movies
@@ -119,8 +122,6 @@ namespace TVProject.Controllers
             }
             return View(movie);
         }
-
-        // GET: Movies/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var movie = await _movieService.GetByIdAsync(id);
@@ -132,13 +133,20 @@ namespace TVProject.Controllers
 
         }
 
-        // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _movieService.DeleteAsync(id);
             return RedirectToAction("Index");
         }
-        
+
+
+
+        public async Task<IActionResult> Search(string query)
+        {
+            var searchResult = await _elasticsearchService.SearchMoviesAsync(query);
+            return View(searchResult.Documents);
+        }
+
     }
 }

@@ -1,0 +1,52 @@
+﻿@model TVProject.Models.CartItem
+
+@{
+    ViewData["Title"] = "Confirm Deletion";
+}
+
+<div class="container mt-4">
+    <h1 class="text-danger">Confirm Deletion</h1>
+    <h3>Are you sure you want to remove this item from your cart?</h3>
+    <div class="border p-3 rounded">
+        <h4>Cart Item Details</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Movie)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Movie.Name)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="col-sm-9">
+                $@Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Quantity)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Quantity)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Cart)
+            </dt>
+            <dd class="col-sm-9">
+                Cart ID: @Html.DisplayFor(model => model.Cart.Id)
+            </dd>
+        </dl>
+    </div>
+
+    <div class="mt-4">
+        <form asp-action="Delete" method="post" class="d-inline">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Delete
+            </button>
+        </form>
+        <a asp-action="Index" class="btn btn-secondary ml-2">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>

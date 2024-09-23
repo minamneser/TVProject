@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using TVProject.Models;
 
 namespace TVProject.Data.Interfaces
 {
@@ -8,6 +9,8 @@ namespace TVProject.Data.Interfaces
         Task<T> GetByIdAsync(int id);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int id);      
     }
+
+    
 }

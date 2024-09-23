@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using TVProject.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace TVProject.Areas.Identity.Pages.Account
 {
@@ -26,6 +28,7 @@ namespace TVProject.Areas.Identity.Pages.Account
         {
             _signInManager = signInManager;
             _logger = logger;
+            
         }
 
         /// <summary>
@@ -136,5 +139,8 @@ namespace TVProject.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+        
+        
+        
     }
 }

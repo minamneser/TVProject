@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using TVProject.Models;
 
 namespace TVProject.Areas.Identity.Pages.Account
 {
@@ -29,6 +30,7 @@ namespace TVProject.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -101,6 +103,9 @@ namespace TVProject.Areas.Identity.Pages.Account
             [Phone]
             [Display(Name = "PhoneNumber")]
             public string PhoneNumber { get; set; }
+            [Required]
+            [Display(Name ="SubscriptionType")]
+            public string SubscriptionType { get; set; }
         }
 
 
@@ -119,7 +124,10 @@ namespace TVProject.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 user.PhoneNumber = Input.PhoneNumber;
-                user.EmailConfirmed = true;
+                //user.EmailConfirmed = true;
+                user.SubscriptionType = Input.SubscriptionType;
+                user.SubscriptionExpiration = DateTime.Now.AddMonths(1);
+
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -128,6 +136,8 @@ namespace TVProject.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, "User");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -161,16 +171,17 @@ namespace TVProject.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
+                
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }

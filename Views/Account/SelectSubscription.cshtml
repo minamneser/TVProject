@@ -1,0 +1,17 @@
+﻿@model TVProject.Models.SubscriptionChecker
+@{
+    ViewData["Title"] = "SelectSubscription";
+}
+
+<h1>SelectSubscription</h1>
+
+<form asp-action="SelectSubscription" method="post">
+    <div class="form-group">
+        <label>Select Subscription:</label>
+        <select name="subscriptionType" class="form-control">
+            <option value="Silver">Silver (1 movie per day)</option>
+            <option value="Gold">Gold (Unlimited)</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
