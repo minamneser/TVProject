@@ -7,7 +7,7 @@ using TVProject.Models;
 
 namespace TVProject.Data.Services.MovieServices
 {
-	public class MovieService : IMovieService
+    public class MovieService : IMovieService
 	{
         private readonly IUnitOfWork _unitOfWork;
 		private readonly ElasticSearchService _elasticSearchService;
@@ -23,14 +23,30 @@ namespace TVProject.Data.Services.MovieServices
 		{
 			await _unitOfWork.Movies.AddAsync(movie);			
 			await _unitOfWork.saveAsync();
-            await _elasticSearchService.IndexMovieAsync(movie);
+
+
+			var cacheKey = "moviesList";
+			await _cache.RemoveAsync(cacheKey);
+			await _cache.RemoveAsync($"movie_{movie.Id}");
+			
+			var movies = await _unitOfWork.Movies.GetAllAsync();
+			var serializedMovie = JsonConvert.SerializeObject(movies);
+
+			await _cache.SetStringAsync(cacheKey, serializedMovie, new DistributedCacheEntryOptions
+			{
+				AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+			});
         }
 
 		public async Task DeleteAsync(int id)
 		{
 			await _unitOfWork.Movies.DeleteAsync(id);
 			await _unitOfWork.saveAsync();
-		}
+
+			var cacheKey = "moviesList";
+			await _cache.RemoveAsync(cacheKey);
+            
+        }
 
         public async Task<IEnumerable<Actor>> GetAllActorsAsync()
         {
@@ -51,7 +67,7 @@ namespace TVProject.Data.Services.MovieServices
 
 			await _cache.SetStringAsync(cacheKey, serializedMovies, new DistributedCacheEntryOptions
 			{
-				AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+				AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
 			});
 			return movies;
 		}
@@ -92,5 +108,17 @@ namespace TVProject.Data.Services.MovieServices
 				throw;
 			}
         }
+
+        public async Task<IEnumerable<Movie>> SearchMoviesAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return new List<Movie>();
+            }
+
+            return await _unitOfWork.Movies.GetAllAsync(m => m.Name.Contains(query));
+        }
+
+        
     }
 }

@@ -58,10 +58,11 @@
                         }
 
                         </ul>
-                    <form asp-controller="Movies" asp-action="Search" method="get">
-                        <input type="text" name="query" placeholder="Search for movies..." />
-                        <button type="submit">Search</button>
+                    <form asp-controller="Movies" asp-action="Search" method="get" class="form-inline">
+                        <input type="text" name="query" placeholder="Search movies..." />
+                        <button type="submit" class="btn btn-outline-success">Search</button>
                     </form>
+
                         <partial name="_LoginPartial" />
                     </div>
                 </div>

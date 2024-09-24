@@ -1,17 +1,21 @@
-﻿@model IEnumerable<Movie>
+﻿@model MovieSearchView
 
-<h2>Search Results</h2>
+<form asp-action="Search" method="get">
+    <input type="text" name="query" value="@Model.Query" placeholder="Search movies..." />
+    <button type="submit">Search</button>
+</form>
 
-@if (Model.Any())
+@if (Model.Results != null && Model.Results.Any())
 {
+    <h2>Search Results</h2>
     <ul>
-        @foreach (var movie in Model)
+        @foreach (var movie in Model.Results)
         {
-            <li>@movie.Name - @movie.Description</li>
+            <li>@movie.Name (@movie.StartDate.Year)</li>
         }
     </ul>
 }
-else
+else if (!string.IsNullOrEmpty(Model.Query))
 {
-    <p>No results found.</p>
+    <p>No results found for "@Model.Query".</p>
 }

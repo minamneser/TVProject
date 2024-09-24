@@ -144,8 +144,12 @@ namespace TVProject.Controllers
 
         public async Task<IActionResult> Search(string query)
         {
-            var searchResult = await _elasticsearchService.SearchMoviesAsync(query);
-            return View(searchResult.Documents);
+            var model = new MovieSearchView
+            {
+                Query = query,
+                Results = (await _movieService.SearchMoviesAsync(query)).ToList()
+            };
+            return View(model);
         }
 
     }
